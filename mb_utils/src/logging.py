@@ -2,7 +2,7 @@ from logging import *
 import os
 from colorama import Fore, Style
 from colorama import init as _colorama_init
-from terminal import stty_size
+from .terminal import stty_size
 _colorama_init()
 
 __all__ = ['make_logger','logger']
