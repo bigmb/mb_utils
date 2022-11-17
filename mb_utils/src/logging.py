@@ -33,7 +33,7 @@ def make_logger(name):
     formatter.default_time_format = "%a %H:%M:%S" # stupid Python 3.8 implementation of Formatter
     std_handler.setFormatter(formatter)
 
-    logger.logger.addHandler(std_handler)
+    logger.addHandler(std_handler)
 
     return logger
 
