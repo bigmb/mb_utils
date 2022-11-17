@@ -14,5 +14,5 @@ setup(
     install_requires=[
         "numpy",
         "pandas",
-        "logger",],
+        "logging",],
     python_requires='>=3.8',)
