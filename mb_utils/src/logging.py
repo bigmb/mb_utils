@@ -37,4 +37,4 @@ def make_logger(name):
 
     return logger
 
-logger = make_logger("basic_logger")
+logger = make_logger("basic_mb")
