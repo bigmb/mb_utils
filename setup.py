@@ -14,5 +14,6 @@ setup(
     install_requires=[
         "numpy",
         "pandas",
-        "logging",],
+        "logging",
+        "colorama",],
     python_requires='>=3.8',)
