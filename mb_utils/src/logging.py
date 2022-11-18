@@ -15,7 +15,7 @@ def make_logger(name):
     Output:
         logger object
     """
-    logger = getLogger(name).addHandler(NullHandler())
+    logger = getLogger(name)
     basicConfig(filename='logger.log',filemode='w',level=INFO)
     logger.setLevel(1) #getting all logs
     std_handler = StreamHandler()
