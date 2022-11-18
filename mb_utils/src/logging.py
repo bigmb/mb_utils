@@ -1,5 +1,6 @@
 from logging import *
 import os
+import logging.handlers
 from colorama import Fore, Style
 from colorama import init as _colorama_init
 from .terminal import stty_size
@@ -16,10 +17,9 @@ def make_logger(name):
         logger object
     """
     logger = getLogger(name)
-    basicConfig(filename='logger.log',filemode='w',level=INFO)
     logger.setLevel(1) #getting all logs
-    std_handler = StreamHandler()
-
+    #basicConfig(filename='logger.log',filemode='w',level=INFO)
+    
     # determine some max string lengths
     column_length = stty_size()[1]-13
     log_lvl_length = min(max(int(column_length*0.03), 1), 8)
@@ -27,12 +27,25 @@ def make_logger(name):
     column_length -= log_lvl_length
     s5 = '-{}.{}s'.format(column_length, column_length)
     
+    #file_handler = FileHandler('logger.log')
+    os.mkdir('logs') if not os.path.exists('logs') else None
+    should_roll_over = os.path.isfile('logs/logger.log')
+    file_handler = logging.handlers.RotatingFileHandler('logs/logger.log',mode='w' ,maxBytes=1000000, backupCount=3)
+    if should_roll_over:  # log already exists, roll over!
+        file_handler.doRollover()
+    file_handler.setLevel(DEBUG)
+    file_formatter = Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    file_handler.setFormatter(file_formatter)
+    
+    std_handler = StreamHandler()
+    std_handler.setLevel(DEBUG)
     fmt_str = Fore.CYAN+'%(asctime)s '+Fore.LIGHTGREEN_EX+'%(levelname)'+s1+\
             Fore.LIGHTWHITE_EX+'%(message)'+s5+Fore.RESET
     formatter = Formatter(fmt_str)
-    formatter.default_time_format = "%a %H:%M:%S" # stupid Python 3.8 implementation of Formatter
+    formatter.default_time_format = "%a %H:%M:%S" 
     std_handler.setFormatter(formatter)
-
+    
+    logger.addHandler(file_handler)
     logger.addHandler(std_handler)
 
     return logger
