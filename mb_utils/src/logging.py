@@ -17,9 +17,11 @@ def make_logger(name):
         logger object
     """
     logger = getLogger(name)
+    if logger is None:
+        logger.addHandler(NullHandler())
     logger.setLevel(1) #getting all logs
     #basicConfig(filename='logger.log',filemode='w',level=INFO)
-    
+
     # determine some max string lengths
     column_length = stty_size()[1]-13
     log_lvl_length = min(max(int(column_length*0.03), 1), 8)
@@ -27,7 +29,6 @@ def make_logger(name):
     column_length -= log_lvl_length
     s5 = '-{}.{}s'.format(column_length, column_length)
     
-    #file_handler = FileHandler('logger.log')
     os.mkdir('logs') if not os.path.exists('logs') else None
     should_roll_over = os.path.isfile('logs/logger.log')
     file_handler = logging.handlers.RotatingFileHandler('logs/logger.log',mode='w' ,maxBytes=1000000, backupCount=3)
@@ -50,4 +51,5 @@ def make_logger(name):
 
     return logger
 
-logger = make_logger("basic_mb")
+
+logger = make_logger(__name__)
