@@ -4,6 +4,8 @@ import boto3
 import os
 from .logging import logger
 
+__all__ = ['download_file', 'upload_file', 'upload_dir', 'download_dir']
+
 def download_file(bucket_name, file_name, local_file_name):
     """
     download file from s3
