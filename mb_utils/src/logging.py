@@ -52,4 +52,4 @@ def make_logger(name):
     return logger
 
 
-logger = make_logger(__name__)
+logger = make_logger('mb_utils')
