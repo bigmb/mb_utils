@@ -2,6 +2,8 @@
 import PIL.Image as Image
 import os
 
+__all__ = ['verify_image']
+
 def verify_image(image_path, image_type=None, image_size=None,logger=None):
     """
     Function to verify the image

@@ -3,7 +3,7 @@ import time
 
 __all__ = ['timer', 'batch_generator', 'batch_create']
 
-def timer(func):
+def timer(func,logger=None):
     """
     Decorator to time a function
     Input:
@@ -12,10 +12,10 @@ def timer(func):
     def wrapper(*args,**kwargs):
         before = time.time()
         a = func(*args,**kwargs)
-        print('function time : ',time.time() - before, "seconds" )
+        if logger:
+            logger.info('function time : ',time.time() - before, "seconds" )
         return a
     return wrapper
-
 
 def batch_generator(iterable, batch_size):
     """
@@ -30,7 +30,7 @@ def batch_generator(iterable, batch_size):
     for ndx in range(0, l, batch_size):
         yield iterable[ndx:min(ndx + batch_size, l)]
 
-def batch_create(l, n):
+def batch_create(l, n,logger=None):
     """
     Create batches in a list of a size from a given list
     Input:
@@ -42,5 +42,6 @@ def batch_create(l, n):
     batch_create_list=[]
     for i in range(0, len(l), n):
         batch_create_list.append(l[i:i+n])
-    print("batches created : {}".format(len(batch_create_list)))
+    if logger:
+        logger.info("batches created : {}".format(len(batch_create_list)))
     return batch_create_list

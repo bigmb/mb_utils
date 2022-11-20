@@ -2,7 +2,9 @@
 
 import os
 
-def check_path(path,logger=None):
+__all__ = ['check_path']
+
+def check_path(path,logger=None) -> bool:
     """
     Function to check the path
     Input:
