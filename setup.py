@@ -14,5 +14,6 @@ setup(
     install_requires=[
         "numpy",
         "pandas",
-        "colorama",],
+        "colorama",
+        "fastprogress",],
     python_requires='>=3.8',)

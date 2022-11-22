@@ -7,6 +7,7 @@ from mb_utils.src import verify_image,logging
 import argparse
 import pandas as pd
 from datetime import datetime
+from fastprogress.fastprogress import master_bar, progress_bar
 
 def verify_images_script(image_list: list , logger=None) -> dict:
     """
@@ -22,7 +23,7 @@ def verify_images_script(image_list: list , logger=None) -> dict:
 
     if logger:
         logger.info('Verifying images')
-    image_dict = {image_list[i]:verify_image.verify_images(i) for i in range(len(image_list))}
+    image_dict = {image_list[i]:verify_image.verify_images(i) for i in progress_bar(range(len(image_list)))}
     
     if logger:
         logger.info('Finished verifing images')
@@ -57,7 +58,7 @@ def main(args):
         if logger:
             logger.info('Saving corrupted images to {}'.format(path))
         os.mkdir('./corrupted_image_paths') if not os.path.exists('./corrupted_image_paths') else None
-        save_l=[i for i in image_dict if image_dict[i] == False]
+        save_l=[i for i in progress_bar(range(len(image_dict))) if image_dict[i] == False]
         df = pd.DataFrame (save_l, columns = ['corrupted_image_paths'])
         df.to_csv(path, index=False)
         if logger:
