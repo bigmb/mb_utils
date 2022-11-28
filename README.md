@@ -22,4 +22,6 @@ Srcipts:
 
     1) verify_images_script
 
-    
+Pip install:
+
+    pip install mb-utils
