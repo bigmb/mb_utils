@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+##Run the make_version file to update the version number and then run this file to install the package and upload it to pipy.
 
 import os
 import subprocess
