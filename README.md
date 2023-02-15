@@ -23,4 +23,4 @@ Srcipts:
 
 Pip install:
 
-    pip install mb-utils
+    pip install mb_utils
