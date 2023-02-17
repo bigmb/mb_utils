@@ -16,6 +16,7 @@ mb_utils:
     5) retry_decorator - for retriyng any function (from mb_utils.src.retry_decorator import retry)
     6) s3 - for s3 functions (from mb_utils.src.s3 import *) ['download_file', 'upload_file', 'upload_dir', 'download_dir']
     7) extra - extra basic utils functions (from mb_utils.src.extra import *) ['timer', 'batch_generator', 'batch_create']
+    8) edge_points_cron - func for getting points from edge browser #extra 
 
 Srcipts:
 
