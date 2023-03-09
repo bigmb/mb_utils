@@ -1,6 +1,7 @@
 ##Function to check paths
 
 import os
+import pandas as pd
 
 __all__ = ['check_path']
 
@@ -8,14 +9,16 @@ def check_path(path,logger=None) -> bool:
     """
     Function to check the path
     Input:
-        path: path to be checked
+        path: path to be checked (list or pandas.DataFrame)
     Output:
-        status: True if the path exists, False otherwise
+        list: True if path exists else False
     """
-    status = False
-    if os.path.exists(path):
-        status = True
-    else:
-        if logger:
-            logger.warning("Path not found : {}".format(path))
-    return status
+    if type(path) != list or type(path) != pd.DataFrame:
+        path = [path]
+    if type(path) == pd.DataFrame:
+        path = path.values.tolist()
+    
+    res = [True if os.path.exists(p) else False for p in path]
+    if logger:
+        logger.info('Path not found: {}'.format(path.count(False)))
+    return res
