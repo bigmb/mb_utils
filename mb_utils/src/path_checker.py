@@ -13,9 +13,9 @@ def check_path(path,logger=None) -> bool:
     Output:
         list: True if path exists else False
     """
-    if type(path) != list or type(path) != pd.DataFrame:
+    if type(path) != list or type(path) != pd.DataFrame or type(path) != pd.core.series.Series:
         path = [path]
-    if type(path) == pd.DataFrame:
+    if type(path) == pd.core.series.Series:
         path = path.values.tolist()
     
     res = [True if os.path.exists(p) else False for p in path]
