@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-##Run the make_version file to update the version number and then run this file to install the package and upload it to pipy.
+##Run this file to install the package and upload it to pipy. The commit needs to be done before.
 
 import os
 import subprocess
@@ -13,16 +13,27 @@ os.system('cd ' + file)
 os.system('./make_version.sh')
 
 print("version file updated")
+print('*'*100)
+
+subprocess.run(["git", "add", "."], check=True, stdout=subprocess.PIPE).stdout
+subprocess.run(["git", "commit", "-am", "Bug fix commit"], check=True, stdout=subprocess.PIPE).stdout
+
+print('git commit done')
+
+subprocess.run(["git", "pull"], check=True, stdout=subprocess.PIPE).stdout
+print('git pull done')
+print('*'*100)
+
+subprocess.run(["git", "push"], check=True, stdout=subprocess.PIPE).stdout
+print('*'*100)
+print('removing dist and build folders')
 
 if os.path.exists(file+'/dist'):
     os.system('sudo rm -rf '+file+'/dist')
     os.system('sudo rm -rf '+file+'/build')
 #subprocess.run(["ls"]),check=True, stdout=subprocess.PIPE).stdout
 os.system("ls")
-subprocess.run(["git", "pull"], check=True, stdout=subprocess.PIPE).stdout
-#os.system('git pull')
-print('git pull done')
-print('*'*100)
+
 os.system('python3.8 -m setup bdist_wheel')
 
 print('*'*100)
