@@ -2,11 +2,10 @@
 
 import boto3
 import os
-from .logging import logger
 
 __all__ = ['download_file', 'upload_file', 'upload_dir', 'download_dir']
 
-def download_file(bucket_name, file_name, local_file_name):
+def download_file(bucket_name, file_name, local_file_name,logger=None):
     """
     download file from s3
     Input:
@@ -27,7 +26,7 @@ def download_file(bucket_name, file_name, local_file_name):
     if logger:
         logger.info('Downloaded file from s3')
 
-def upload_file(bucket_name, file_name, local_file_name):
+def upload_file(bucket_name, file_name, local_file_name,logger=None):
     """
     upload file to s3
     Input:
@@ -48,7 +47,7 @@ def upload_file(bucket_name, file_name, local_file_name):
     if logger:
         logger.info('File uploaded to s3')
 
-def upload_dir(bucket_name, dir_name, local_dir_name):
+def upload_dir(bucket_name, dir_name, local_dir_name,logger=None):
     """
     upload directory to s3
     Input:
@@ -71,7 +70,7 @@ def upload_dir(bucket_name, dir_name, local_dir_name):
     if logger:
         logger.info('Directory uploaded to s3')
 
-def download_dir(bucket_name, dir_name, local_dir_name=None):
+def download_dir(bucket_name, dir_name, local_dir_name=None,logger=None):
     """
     download directory from s3
     Input:

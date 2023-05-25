@@ -5,7 +5,6 @@ MTbase function.
 
 from functools import wraps
 import traceback as _tb
-from .logging import logger
 
 __all__ = ['deprecated_func']
 
@@ -17,7 +16,7 @@ def extract_stack_compact():
     return lines
 
 
-def deprecated_func(deprecated_version, suggested_func=None, removed_version=None, docstring_prefix=""):
+def deprecated_func(deprecated_version, suggested_func=None, removed_version=None, docstring_prefix="",logger=None):
     '''A decorator to warn the user that the function has been deprecated and will be removed in future.
     Parameters
     ----------
