@@ -117,8 +117,10 @@ def list_objects(bucket_name,logger=None,**kwargs):
                 logger.info(obj['Key'])
             else:
                 print(obj['Key'])
+        return objects['Contents']
     else:
         if logger:
             logger.info(f"No objects found in {bucket_name}")
         else:
             print(f"No objects found in {bucket_name}")
+        return None
