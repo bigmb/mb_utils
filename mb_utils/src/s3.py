@@ -3,7 +3,7 @@
 import boto3
 import os
 
-__all__ = ['download_file', 'upload_file', 'upload_dir', 'download_dir']
+__all__ = ['download_file', 'upload_file', 'upload_dir', 'download_dir','list_objects']
 
 def download_file(bucket_name, file_name, local_file_name,logger=None):
     """
@@ -98,3 +98,27 @@ def download_dir(bucket_name, dir_name, local_dir_name=None,logger=None):
         raise e
     if logger:
         logger.info('Downloaded directory from s3')
+
+def list_objects(bucket_name,logger=None,**kwargs):
+    """
+    List all the objects in the bucket
+    Args:
+        bucket_name : str
+            Name of the bucket
+    Returns:
+        List of objects in the bucket
+    """
+    s3 = boto3.resource('s3')
+    objects = s3.list_objects_v2(Bucket=bucket_name)
+
+    if 'Contents' in objects:
+        for obj in objects['Contents']:
+            if logger:
+                logger.info(obj['Key'])
+            else:
+                print(obj['Key'])
+    else:
+        if logger:
+            logger.info(f"No objects found in {bucket_name}")
+        else:
+            print(f"No objects found in {bucket_name}")
