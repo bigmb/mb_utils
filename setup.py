@@ -15,5 +15,6 @@ setup(
         "numpy",
         "pandas",
         "colorama",
-        "fastprogress",],
+        "fastprogress",
+        "boto3",],
     python_requires='>=3.8',)

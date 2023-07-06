@@ -123,4 +123,4 @@ def list_objects(bucket_name,logger=None,**kwargs):
             logger.info(f"No objects found in {bucket_name}")
         else:
             print(f"No objects found in {bucket_name}")
-        return None
+        return []
