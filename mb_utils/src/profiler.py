@@ -15,6 +15,12 @@ def run_with_snakeviz(func, *args, save_only=False,file_path=None, **kwargs):
         func: The function to profile.
         *args, **kwargs: Arguments to pass to the function.
         save_only (bool): If True, only saves the file and does not launch SnakeViz.
+        file_path (str): Path to save the profile file. Defaults to 'profiler.prof' in the current directory.
+
+    Example:
+    @run_with_snakeviz
+    def my_function():
+        pass
     """
     if file_path is None:
         file_path = os.path.join(os.getcwd(), "profiler.prof")
@@ -38,6 +44,11 @@ def line_profile(func):
     """
     A decorator that profiles the function line-by-line using line_profiler.
     Compatible with IPython/Jupyter. 
+
+    Example:
+    @line_profile
+    def my_function():
+        pass
     """
     from line_profiler import LineProfiler
     @functools.wraps(func)
