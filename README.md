@@ -1,7 +1,6 @@
 # MB Utils
 
-[![Python Version](https://img.shields.io/badge/python-3.6%20%7C%203.7%20%7C%203.8%20%7C%203.9%20%7C%203.10-blue)](https://www.python.org/)
-[![PyPI Version](https://img.shields.io/pypi/v/mb_utils.svg)](https://pypi.org/project/mb_utils/)
+[![Python Version](https://img.shields.io/badge/python-3.8+-blue)](https://www.python.org/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/bigmb/mb_utils/graphs/commit-activity)
 [![Downloads](https://static.pepy.tech/badge/mb_utils)](https://pepy.tech/project/mb_utils)
@@ -25,7 +24,7 @@ Install the package using pip:
 pip install mb_utils
 ```
 
-## 📚 Usage
+## Usage
 
 ### Logging
 ```python
@@ -77,7 +76,7 @@ download_file('bucket-name', 'remote_file.txt', 'local_file.txt')
 | profiler | Code profiling utilities | `from mb_utils.src.profiler import *` |
 | video_extract | Video processing and frame extraction | `from mb_utils.src.video_extract import *` |
 
-## 🎥 Video Extraction
+## Video Extraction
 
 The `video_extract` module provides utilities for working with video files, including frame extraction and YouTube video downloading.
 
