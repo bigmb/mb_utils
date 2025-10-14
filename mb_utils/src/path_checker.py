@@ -11,7 +11,7 @@ def check_path(path,logger=None,path_column=None,max_threads=16) -> bool:
     Function to check the path.
     Tqdm progress bar is used to show the progress and it updates every 1 second.
     Input:
-        path: path to be checked (list or pandas.DataFrame).
+        path (list): path to be checked (list or pandas.DataFrame).
         path_column: column name if path is pandas.DataFrame (str, optional)
         logger: logger object (optional)
         max_threads: maximum number of threads to use (int, optional, default=16)

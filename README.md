@@ -38,8 +38,7 @@ logger.error("This is an error message")
 ```python
 from mb_utils.src.path_checker import check_path
 
-if check_path("/path/to/check"):
-    print("Path exists!")
+check_path(path_list,max_workers=16)
 ```
 
 ### Retry Decorator
@@ -74,36 +73,7 @@ download_file('bucket-name', 'remote_file.txt', 'local_file.txt')
 | s3 | AWS S3 operations | `from mb_utils.src.s3 import *` |
 | extra | Additional utilities | `from mb_utils.src.extra import *` |
 | profiler | Code profiling utilities | `from mb_utils.src.profiler import *` |
-| video_extract | Video processing and frame extraction | `from mb_utils.src.video_extract import *` |
 
-## Video Extraction
-
-The `video_extract` module provides utilities for working with video files, including frame extraction and YouTube video downloading.
-
-### Extract Frames from Video
-```python
-from mb_utils.src.video_extract import write_vid_to_img
-
-# Extract frames from a video file
-write_vid_to_img(
-    url="/path/to/video.mp4",
-    folder="./output_frames"  
-)
-```
-
-### Download YouTube Videos
-```python
-from mb_utils.src.video_extract import download_yt_vid
-
-# Download highest resolution
-video_path = download_yt_vid(
-    url="https://www.youtube.com/watch?v=example",
-    folder="./videos",
-    file_name="my_video.mp4",
-    res='high'  # or 'low' for lowest resolution
-)
-```
-USe mb_shorts/mb_ffmpeg for all YT/video processing 
 
 ##  Profiling
 
