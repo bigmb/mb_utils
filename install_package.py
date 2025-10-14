@@ -55,7 +55,7 @@ if subprocess.run(['uv','--version'], stdout=subprocess.PIPE, stderr=subprocess.
 else:
     subprocess.run(['uv', 'build'], check=True)
     print('*'*100)
-    subprocess.run(['sudo','uv', 'pip', 'install', os.path.join('dist', os.listdir('dist')[-1])], check=True)
+    subprocess.run(['sudo','uv', 'pip', 'install', '--system', os.path.join('dist', os.listdir('dist')[-1])], check=True)
     print('build and installed using uv')
     print('*'*100)
 
