@@ -1,57 +1,55 @@
 ##Function to verify the image
 import PIL.Image as Image
 import os
+from concurrent.futures import ThreadPoolExecutor
+from functools import partial
+from tqdm.auto import tqdm
 
 __all__ = ['verify_image']
 
-def verify_image(image_path, image_type=None, image_size=None,logger=None):
+def verify_image(image_paths: list, image_type=None, image_shape=None,logger=None,max_workers=16) -> list:
     """
-    Function to verify the image
+    Function to verify the image. Checks Path, Type and Size of the image if the later two are provided.
+    tqdm progress bar is used to show the progress and it updates every 1 second.
     Input:
-        image_path: path to the image
-        image_name: name of the image
-        image_type: type of the image
-        image_size: size of the image
+        image_paths: list of paths to the images
+        image_type (str : optional): type of the image
+        image_shape (Tuple : optional): verify if image shape. (width, height) 
     Output:
-        status: True if the image is verified, False otherwise
+        results (list : bool): lists of bools indicating if each image is valid. Also returns size_mismatch if image_shape is provided and not correct.
     """
-    status = False
-    if os.path.isfile(image_path):
-        if image_size:
-            if os.path.getsize(image_path) == image_size:
-                status=True
-            else:
-                status=False
-                if logger:
-                    logger.warning("Image size mismatch : {}".format(image_path))
-                return status         
-        try:
+    
+
+    def verify_single_image(image_path,image_type=None, image_shape=None):
+        if os.path.isfile(image_path):
             im = Image.open(image_path)
-            if im.format == 'JPEG':
-                status = True
-                return status
-            if im.format == 'PNG':
-                status = True
-                return status
-            if im.format == 'GIF':
-                status = True
-                return status
-            if im.format == 'BMP':
-                status = True
-                return status
-            if im.format == 'TIFF':
-                status = True
-                return status    
-            if im.format == "JPG":
-                status = True
-                return status
-            else:
-                if logger:
-                    logger.warning("Unknown image type : {}".format(image_path))
-        except IOError:
-            if logger:
-                logger.warning("Image path not verified : {}".format(image_path))
-            pass
-    else:
+            if image_type and im.format != image_type.upper():
+                return 'image_type_mismatch'
+            elif not image_type and im.format not in ('JPEG', 'PNG', 'GIF', 'BMP', 'TIFF', 'JPG'):
+                return 'unknown_image_format'
+            if image_shape and im.size != image_shape:  # PIL uses (width, height)
+                    return 'image_shape_mismatch'
+            im.close()
+            return True
+        else:
+            return False
+                    
+    verify_func = partial(verify_single_image, image_type=image_type, image_shape=image_shape) ### partial function fixes the given arguments
+    
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
+        results = list(tqdm(executor.map(verify_func, image_paths), total=len(image_paths),mininterval=1))
+    if image_shape:
         if logger:
-            logger.warning("Image path not found : {}".format(image_path))
+            logger.info('Image shape mismatch: {}'.format(results.count('image_shape_mismatch')))
+        else:
+            print('Image shape mismatch: {}'.format(results.count('image_shape_mismatch')))
+    if image_type:
+        if logger:
+            logger.info('Image type mismatch: {}'.format(results.count('image_type_mismatch')))
+        else:
+            print('Image type mismatch: {}'.format(results.count('image_type_mismatch')))
+    if logger:
+        logger.info('Image not found: {}'.format(results.count(False)))
+    else:
+        print('Image not found: {}'.format(results.count(False)))
+    return results
