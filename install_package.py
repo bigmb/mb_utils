@@ -104,3 +104,9 @@ print('*'*100)
 import glob
 whl_files = glob.glob("dist/*.whl")
 subprocess.run(["uvx", "uv-publish"] + whl_files, check=True)
+
+# Upload .whl to the latest GitHub release
+version = subprocess.run(['cat', 'VERSION.txt'], capture_output=True, text=True).stdout.strip()
+for whl in whl_files:
+    subprocess.run(['gh', 'release', 'upload', version, whl, '--clobber'], check=True)
+print(f'Uploaded {len(whl_files)} whl file(s) to GitHub release {version}')
