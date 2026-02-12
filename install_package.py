@@ -75,11 +75,13 @@ def install_package():
     subprocess.run(['rm', '-rf', 'dist'], check=True)
     subprocess.run(['uv', 'build'], check=True)
     latest_file = sorted(os.listdir('./dist'))[-1]
+    whl_files = [f for f in os.listdir('./dist') if f.endswith('.whl')]
+    latest_file = sorted(whl_files)[-1] if whl_files else sorted(os.listdir('./dist'))[-1]
     print(f'Installing package file: {latest_file}')
     try:
-        subprocess.run(['uv','pip', 'install', f'./dist/{latest_file}','--system'], check=True)
+        subprocess.run(['uv','pip', 'install', f'./dist/{latest_file}','--system', '--break-system-packages'], check=True)
     except:
-        subprocess.run(['sudo','uv','pip', 'install', f'./dist/{latest_file}','--system'], check=True)
+        subprocess.run(['sudo','uv','pip', 'install', f'./dist/{latest_file}','--system', '--break-system-packages'], check=True)
         
 install_package()
 print('package installed')
