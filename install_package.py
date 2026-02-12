@@ -86,5 +86,6 @@ def install_package():
 install_package()
 print('package installed')
 print('*'*100)
-# files = glob.glob("dist/*")
-subprocess.run(["uvx", "uv-publish"], check=True)
+import glob
+whl_files = glob.glob("dist/*.whl")
+subprocess.run(["uvx", "uv-publish"] + whl_files, check=True)
