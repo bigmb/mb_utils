@@ -1,10 +1,33 @@
 from logging import *
 import os
 import logging.handlers
-from colorama import Fore, Style
+from colorama import Fore, Back, Style
 from colorama import init as _colorama_init
 from .terminal import stty_size
 _colorama_init()
+
+
+LEVEL_COLORS = {
+    'DEBUG':    Fore.LIGHTBLACK_EX,
+    'INFO':     Fore.GREEN,
+    'WARNING':  Fore.YELLOW,
+    'ERROR':    Fore.RED,
+    'CRITICAL': Fore.WHITE + Back.RED + Style.BRIGHT,
+}
+
+
+class ColoredFormatter(Formatter):
+    """Formatter that applies per-level colors to console output."""
+
+    def __init__(self, fmt, datefmt=None):
+        super().__init__(fmt, datefmt=datefmt)
+        self.default_msec_format = None
+
+    def format(self, record):
+        color = LEVEL_COLORS.get(record.levelname, Fore.RESET)
+        record.levelcolor = color
+        record.reset = Style.RESET_ALL
+        return super().format(record)
 
 __all__ = ['make_logger','logger', 'logg']
 
@@ -93,10 +116,12 @@ def make_logger(name):
     
     std_handler = StreamHandler()
     std_handler.setLevel(DEBUG)
-    fmt_str = Fore.CYAN+'%(asctime)s '+Fore.LIGHTGREEN_EX+'%(levelname)'+s1+\
-            Fore.LIGHTWHITE_EX+'%(message)'+s5+Fore.RESET
-    formatter = Formatter(fmt_str)
-    formatter.default_time_format = "%a %H:%M:%S" 
+    fmt_str = (
+        Fore.CYAN + '%(asctime)s' + Fore.RESET + ' │ '
+        '%(levelcolor)s%(levelname)-8s' + Fore.RESET + Style.RESET_ALL + ' │ '
+        '%(levelcolor)s%(message)s%(reset)s'
+    )
+    formatter = ColoredFormatter(fmt_str, datefmt='%H:%M:%S')
     std_handler.setFormatter(formatter)
     
     logger.addHandler(file_handler)
