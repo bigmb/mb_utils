@@ -72,6 +72,15 @@ import subprocess
 
 def install_package():
     subprocess.run(['./make_version.sh'], check=True)
+    subprocess.run(['git', 'add', '.'], check=True)
+    msg = "updated version :" + subprocess.run(['cat', 'VERSION.txt'], check=True, stdout=subprocess.PIPE).stdout.decode().strip()
+    subprocess.run(['git', 'commit', '-am', msg], check=True)
+    print('git commit done')
+    subprocess.run(['git', 'pull'], check=True)
+    print('git pull done')
+    subprocess.run(['git', 'push'], check=True)
+    print('git push done')
+    print('*'*100)
     subprocess.run(['rm', '-rf', 'dist'], check=True)
     subprocess.run(['uv', 'build'], check=True)
     latest_file = sorted(os.listdir('./dist'))[-1]
