@@ -107,6 +107,8 @@ subprocess.run(["uvx", "uv-publish"] + whl_files, check=True)
 
 # Upload .whl to the latest GitHub release
 version = subprocess.run(['cat', 'VERSION.txt'], capture_output=True, text=True).stdout.strip()
+# Create the release if it doesn't exist yet
+subprocess.run(['gh', 'release', 'create', version, '--title', f'v{version}', '--notes', f'Release {version}', '--latest'], check=False)
 for whl in whl_files:
     subprocess.run(['gh', 'release', 'upload', version, whl, '--clobber'], check=True)
 print(f'Uploaded {len(whl_files)} whl file(s) to GitHub release {version}')
