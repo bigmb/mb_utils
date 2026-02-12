@@ -5,139 +5,161 @@
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/bigmb/mb_utils/graphs/commit-activity)
 [![Downloads](https://static.pepy.tech/badge/mb_utils)](https://pepy.tech/project/mb_utils)
 
-A collection of utility functions and tools to simplify common Python development tasks. This package provides various helper functions for logging, file operations, S3 interactions, and more.
+A collection of utility functions and tools to simplify common Python development tasks. Part of the `mb` namespace — install as `mb_utils`, import as `mb.utils`.
 
 ## Features
 
-- **Logging**: Easy-to-use logging setup with file handlers
-- **File Operations**: Path checking and validation
-- **Decorators**: Useful decorators for deprecation warnings and retry logic
-- **Image Verification**: Validate and verify image files
+- **Logging**: Easy-to-use logging with colored console output, rotating file handlers, and a safe `LoggerWrapper` (`logg`) that skips logging when no logger is provided
+- **File Operations**: Concurrent path checking and validation
+- **Decorators**: Deprecation warnings and retry logic
+- **Image Verification**: Validate image files (path, type, shape) with multithreading
 - **S3 Integration**: Simplified AWS S3 file and directory operations
-- **Utilities**: Various helper functions including timing and batching
+- **Profiling**: Function profiling with SnakeViz, line-by-line profiling
+- **Utilities**: Timer decorator, batch creation
 
-##  Installation
-
-Install the package using pip:
+## Installation
 
 ```bash
 pip install mb_utils
+# or
+uv pip install mb_utils
 ```
+
+This installs under the `mb` namespace. Import everything via `mb.utils.*`.
 
 ## Usage
 
 ### Logging
-```python
-from mb_utils.src.logging import logger
 
-logger.info("This is an info message")
-logger.error("This is an error message")
+```python
+from mb.utils.logging import make_logger, logg
+
+# Create a logger with colored console + rotating file output
+logger = make_logger('myapp')
+logger.info("Direct logger usage")
+
+# Safe logging wrapper — no need for `if logger:` checks
+logg.info("This message logs", logger)      # logs normally
+logg.info("This is silenced", None)          # does nothing
+
+# Set a default logger so you don't have to pass it every time
+logg.set_default(logger)
+logg.info("Uses default logger")             # logs via default
+logg.warning("Also works")
 ```
 
 ### Path Checking
-```python
-from mb_utils.src.path_checker import check_path
 
-check_path(path_list,max_workers=16)
+```python
+from mb.utils.path_checker import check_path
+
+# Check a list of paths concurrently (returns list of bools)
+results = check_path(['/path/to/file1', '/path/to/file2'], max_threads=16)
 ```
 
 ### Retry Decorator
-```python
-from mb_utils.src.retry_decorator import retry
 
-@retry(max_retries=3, delay=1)
+```python
+from mb.utils.retry_decorator import retry
+
+@retry(times=3, exceptions=(ValueError, TypeError))
 def might_fail():
     pass
 ```
 
-### S3 Operations
+### Deprecation Decorator
+
 ```python
-from mb_utils.src.s3 import upload_file, download_file, upload_dir, download_dir
+from mb.utils.deprecated import deprecated_func
 
-# Upload a single file
-upload_file('local_file.txt', 'bucket-name', 'remote_file.txt')
-
-# Download a file
-download_file('bucket-name', 'remote_file.txt', 'local_file.txt')
+@deprecated_func(deprecated_version="1.0", suggested_func="new_func", removed_version="3.0")
+def old_function():
+    pass
 ```
 
-##  Available Modules
+### S3 Operations
 
-| Module | Description | Import Path |
-|--------|-------------|-------------|
-| logging | Logger setup with file handlers | `from mb_utils.src.logging import logger` |
-| path_checker | Path validation utilities | `from mb_utils.src.path_checker import *` |
-| deprecated | Function deprecation decorator | `from mb_utils.src.deprecated import deprecated_func` |
-| verify_image | Image verification | `from mb_utils.src.verify_image import verify_image` |
-| retry_decorator | Retry mechanism for functions | `from mb_utils.src.retry_decorator import retry` |
-| s3 | AWS S3 operations | `from mb_utils.src.s3 import *` |
-| extra | Additional utilities | `from mb_utils.src.extra import *` |
-| profiler | Code profiling utilities | `from mb_utils.src.profiler import *` |
-
-
-##  Profiling
-
-The `profiler` module provides utilities for performance analysis of your Python code.
-
-### Function Profiling with SnakeViz
 ```python
-from mb_utils.src.profiler import run_with_snakeviz
+from mb.utils.s3 import upload_file, download_file, upload_dir, download_dir, list_objects
 
-@run_with_snakeviz(save_only=False)  # Opens SnakeViz automatically
+# Upload / download a single file
+upload_file('bucket-name', 'remote_key.txt', 'local_file.txt')
+download_file('bucket-name', 'remote_key.txt', 'local_file.txt')
+
+# Upload / download entire directories
+upload_dir('bucket-name', 's3/prefix', '/local/dir')
+download_dir('bucket-name', 's3/prefix', '/local/dir')
+
+# List objects
+list_objects('bucket-name')
+```
+
+### Timer & Batch Utilities
+
+```python
+from mb.utils.extra import timer, batch_generator, batch_create
+
+@timer
+def slow_function():
+    pass
+
+# Generator-based batching
+for batch in batch_generator(range(100), batch_size=10):
+    process(batch)
+
+# List-based batching
+batches = batch_create(my_list, n=10)
+```
+
+### Image Verification
+
+```python
+from mb.utils.verify_image import verify_image
+
+results = verify_image(
+    image_paths=['/path/img1.jpg', '/path/img2.png'],
+    image_type='JPEG',           # optional: check format
+    image_shape=(1920, 1080),    # optional: check dimensions (width, height)
+    max_workers=16
+)
+# Returns list: True, False, 'image_type_mismatch', 'image_shape_mismatch', 'unknown_image_format'
+```
+
+### Profiling
+
+```python
+from mb.utils.profiler import run_with_snakeviz, line_profile
+
+# Profile and visualize with SnakeViz
+@run_with_snakeviz
 def process_data(data):
     pass
 
-# Or use as context manager
-with run_with_snakeviz():
-    pass
-```
+# Save profile without opening SnakeViz
+run_with_snakeviz(my_func, arg1, arg2, save_only=True, file_path="output.prof")
 
-### Line-by-Line Profiling
-```python
-from mb_utils.src.profiler import line_profile
-
+# Line-by-line profiling
 @line_profile
 def process_item(item):
     result = item * 2
     return result
 ```
 
-### Simple Timing
-```python
-from mb_utils.src.profiler import time_it
+## Available Modules
 
-@time_it
-def expensive_operation():
-    pass
-```
-
-### Memory Profiling
-```python
-from mb_utils.src.profiler import MemoryProfiler
-
-def process_large_data():
-    with MemoryProfiler() as mem:
-        data = [0] * 10**6
-```
-
-### Comprehensive Profiling
-```python
-from mb_utils.src.profiler import profile_function
-
-@profile_function(
-    enable_line_profiling=True,
-    enable_memory_profiling=True
-)
-def analyze_data(data):
-    # Will run with multiple profiling tools
-    pass
-```
+| Module | Description | Import Path |
+|--------|-------------|-------------|
+| logging | Logger with colored output, file rotation, safe wrapper | `from mb.utils.logging import make_logger, logg` |
+| path_checker | Concurrent path validation | `from mb.utils.path_checker import check_path` |
+| deprecated | Function deprecation decorator | `from mb.utils.deprecated import deprecated_func` |
+| verify_image | Image verification (path, type, shape) | `from mb.utils.verify_image import verify_image` |
+| retry_decorator | Retry mechanism for functions | `from mb.utils.retry_decorator import retry` |
+| s3 | AWS S3 upload/download/list operations | `from mb.utils.s3 import *` |
+| extra | Timer decorator, batch utilities | `from mb.utils.extra import *` |
+| profiler | SnakeViz and line profiling | `from mb.utils.profiler import *` |
+| terminal | Terminal size utilities | `from mb.utils.terminal import stty_size` |
+| version | Package version info | `from mb.utils.version import version` |
 
 ## Included Scripts
 
-- `verify_images_script`: Utility script for image verification
-
-##  License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
+- `verify_images_script`: Utility script for batch image verification

@@ -4,6 +4,7 @@ import os
 from concurrent.futures import ThreadPoolExecutor
 from functools import partial
 from tqdm.auto import tqdm
+from .logging import logg
 
 __all__ = ['verify_image']
 
@@ -48,8 +49,6 @@ def verify_image(image_paths: list, image_type=None, image_shape=None,logger=Non
             logger.info('Image type mismatch: {}'.format(results.count('image_type_mismatch')))
         else:
             print('Image type mismatch: {}'.format(results.count('image_type_mismatch')))
-    if logger:
-        logger.info('Image not found: {}'.format(results.count(False)))
-    else:
-        print('Image not found: {}'.format(results.count(False)))
+    
+    logg.info('Image not found: {}'.format(results.count(False)),logger)
     return results

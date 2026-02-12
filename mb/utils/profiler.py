@@ -3,10 +3,11 @@ import subprocess
 import os
 import functools
 import sys
+from .logging import logg
 
 __all__ = ['run_with_snakeviz','line_profile']
 
-def run_with_snakeviz(func, *args, save_only=False,file_path=None, **kwargs):
+def run_with_snakeviz(func, *args, save_only=False,file_path=None,logger=None, **kwargs):
     """
     Profiles a function, saves to 'profiler.prof' in the current directory,
     and optionally opens SnakeViz.
@@ -32,15 +33,15 @@ def run_with_snakeviz(func, *args, save_only=False,file_path=None, **kwargs):
     finally:
         profiler.disable()
         profiler.dump_stats(file_path)
-        print(f"[Profiler] Saved to {file_path}")
+        logg.info(f"[Profiler] Saved to {file_path}", logger)
 
         if not save_only:
-            print("[Profiler] Launching SnakeViz")
+            logg.info("[Profiler] Launching SnakeViz", logger)
             subprocess.run(["snakeviz", file_path])
 
     return result
 
-def line_profile(func):
+def line_profile(func, logger=None):
     """
     A decorator that profiles the function line-by-line using line_profiler.
     Compatible with IPython/Jupyter. 
@@ -57,5 +58,6 @@ def line_profile(func):
         profiler.add_function(func)
         result = profiler(func)(*args, **kwargs)
         profiler.print_stats(stream=sys.stdout)
+        logg.info("[Profiler] Line profile complete", logger)
         return result
     return wrapper

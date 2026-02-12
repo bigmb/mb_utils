@@ -4,6 +4,8 @@ import os
 import pandas as pd
 from concurrent.futures import ThreadPoolExecutor
 from tqdm.auto import tqdm
+from .logging import logg
+
 __all__ = ['check_path']
 
 def check_path(path,logger=None,path_column=None,max_threads=16) -> bool:
@@ -29,8 +31,5 @@ def check_path(path,logger=None,path_column=None,max_threads=16) -> bool:
     with ThreadPoolExecutor(max_workers=max_threads) as executor:
         results = list(tqdm(executor.map(check_single_path, path), total=len(path), mininterval=1))
         
-    if logger:
-        logger.info('Path not found: {}'.format(results.count(False)))
-    else:
-        print('Path not found: {}'.format(results.count(False)))
+    logg.info('Path not found: {}'.format(results.count(False)), logger)
     return results

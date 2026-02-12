@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from setuptools import setup,find_packages
+from setuptools import find_namespace_packages, setup,find_packages
 import os
 
 VERSION_FILE = os.path.join(os.path.dirname(__file__), "VERSION.txt")
@@ -10,7 +10,7 @@ setup(
     name="mb_utils",
     description="Extra mb python utilities",
     author=["Malav Bateriwala"],
-    packages=find_packages(),
+    packages=find_namespace_packages(include=["mb.*"]),
     #packages=find_packages(),
     scripts=[],
     install_requires=[],

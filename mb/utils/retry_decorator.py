@@ -1,6 +1,8 @@
 ##function to retry a function if it fails
 # Path: mb_utils/src/retry_decorator.py
 
+from .logging import logg
+
 __all__ = ['retry']
 
 def retry(times, exceptions,logger=None):
@@ -21,11 +23,9 @@ def retry(times, exceptions,logger=None):
                 try:
                     return func(*args, **kwargs)
                 except exceptions:
-                    if logger:
-                        logger.error(
+                    logg.error(
                         'Exception thrown when attempting to run %s, attempt '
-                        '%d of %d' % (func, attempt, times)
-                    )
+                        '%d of %d' % (func, attempt, times),logger)
                     attempt += 1
             return func(*args, **kwargs)
         return newfn

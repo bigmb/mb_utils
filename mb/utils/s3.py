@@ -5,6 +5,7 @@ import os
 from functools import partial
 from concurrent.futures import ThreadPoolExecutor
 from tqdm.auto import tqdm
+from .logging import logg
 
 __all__ = ['download_file', 'upload_file', 'upload_dir', 'download_dir','list_objects']
 
@@ -22,12 +23,10 @@ def download_file(bucket_name, file_name, local_file_name,logger=None):
     try:
         s3.Bucket(bucket_name).download_file(file_name, local_file_name)
     except Exception as e:
-        if logger:
-            logger.error('Error in downloading file from s3')
-            logger.error(e)
+        logg.error('Error in downloading file from s3',logger)
+        logg.error(e,logger)
         raise e
-    if logger:
-        logger.info('Downloaded file from s3')
+    logg.info('Downloaded file from s3',logger)
 
 def upload_file(bucket_name, file_name, local_file_name,logger=None):
     """
@@ -43,12 +42,10 @@ def upload_file(bucket_name, file_name, local_file_name,logger=None):
     try:
         s3.Bucket(bucket_name).upload_file(local_file_name, file_name)
     except Exception as e:
-        if logger:
-            logger.error('Error in uploading file to s3')
-            logger.error(e)
+        logg.error('Error in uploading file to s3',logger)
+        logg.error(e)
         raise e
-    if logger:
-        logger.info('File uploaded to s3')
+    logg.info('File uploaded to s3',logger)
 
 def upload_dir(bucket_name, dir_name, local_dir_name,logger=None):
     """
@@ -83,15 +80,9 @@ def upload_dir(bucket_name, dir_name, local_dir_name,logger=None):
         results = list(tqdm(executor.map(upload_func, file_list), total=len(file_list), mininterval=1))
 
     if results.count(False) > 0:
-        if logger:
-            logger.error('Error in uploading files : {i}'.format(i=results.count(False)))
-        else:
-            print('Error in uploading files : {i}'.format(i=results.count(False)))
+        logg.error('Error in uploading files : {i}'.format(i=results.count(False)),logger)
     else:
-        if logger:
-            logger.info('All files uploaded to s3 : {i}'.format(i=len(results)))
-        else:
-            print('All files uploaded to s3 : {i}'.format(i=len(results)))
+        logg.info('All files uploaded to s3 : {i}'.format(i=len(results)),logger)
     return results
 
 def download_dir(bucket_name, dir_name, local_dir_name=None,max_workers=8):
@@ -140,14 +131,8 @@ def list_objects(bucket_name,logger=None,**kwargs):
 
     if 'Contents' in objects:
         for obj in objects['Contents']:
-            if logger:
-                logger.info(obj['Key'])
-            else:
-                print(obj['Key'])
+            logg.info(obj['Key'],logger)
         return objects['Contents']
     else:
-        if logger:
-            logger.info(f"No objects found in {bucket_name}")
-        else:
-            print(f"No objects found in {bucket_name}")
+        logg.info(f"No objects found in {bucket_name}",logger)
         return []

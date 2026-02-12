@@ -1,5 +1,6 @@
 ##Extra functions - batch creation, timer wrapper, etc.
 import time
+from .logging import logg
 
 __all__ = ['timer', 'batch_generator', 'batch_create']
 
@@ -12,8 +13,7 @@ def timer(func,logger=None):
     def wrapper(*args,**kwargs):
         before = time.time()
         a = func(*args,**kwargs)
-        if logger:
-            logger.info('function time : ',time.time() - before, "seconds" )
+        logg.info('function time : {} seconds'.format(time.time() - before), logger)
         return a
     return wrapper
 
@@ -42,6 +42,5 @@ def batch_create(l, n,logger=None):
     batch_create_list=[]
     for i in range(0, len(l), n):
         batch_create_list.append(l[i:i+n])
-    if logger:
-        logger.info("batches created : {}".format(len(batch_create_list)))
+    logg.info("batches created : {}".format(len(batch_create_list)), logger)
     return batch_create_list

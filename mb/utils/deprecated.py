@@ -5,6 +5,7 @@ MTbase function.
 
 from functools import wraps
 import traceback as _tb
+from .logging import logg
 
 __all__ = ['deprecated_func']
 
@@ -36,19 +37,19 @@ def deprecated_func(deprecated_version, suggested_func=None, removed_version=Non
             if not deprecated_func_warned[func]:
                 lines = extract_stack_compact()
                 if len(lines) > 7:
-                    logger.warn("IMPORT: Deprecated function '{}' invoked at:".format(func.__name__))
+                    logg.warn("IMPORT: Deprecated function '{}' invoked at:".format(func.__name__), logger)
                     for x in lines[-7:-5]:
-                        logger.warn(x)
-                    logger.warn("  It has been deprecated since version {}.".format(deprecated_version))
+                        logg.warn(x, logger)
+                    logg.warn("  It has been deprecated since version {}.".format(deprecated_version), logger)
                 else:
-                    logger.warn("IMPORT: Function {} has been deprecated since version {}.".format(func.__name__, deprecated_version))
+                    logg.warn("IMPORT: Function {} has been deprecated since version {}.".format(func.__name__, deprecated_version), logger)
                 if removed_version:
-                    logger.warn("  It will be removed in version {}.".format(removed_version))
+                    logg.warn("  It will be removed in version {}.".format(removed_version), logger)
                 if suggested_func:
                     if isinstance(suggested_func, str):
-                        logger.warn("  Use function '{}' instead.".format(suggested_func))
+                        logg.warn("  Use function '{}' instead.".format(suggested_func), logger)
                     else:
-                        logger.warn("  Use a function in {} instead.".format(suggested_func))
+                        logg.warn("  Use a function in {} instead.".format(suggested_func), logger)
                 deprecated_func_warned[func] = True
             return func(*args, **kwargs)
 
