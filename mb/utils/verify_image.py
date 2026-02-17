@@ -6,9 +6,9 @@ from functools import partial
 from tqdm.auto import tqdm
 from .logging import logg
 
-__all__ = ['verify_image']
+__all__ = ['verify_images']
 
-def verify_image(image_paths: list, image_type=None, image_shape=None,logger=None,max_workers=16) -> list:
+def verify_images(image_paths: list, image_type=None, image_shape=None,logger=None,max_workers=16) -> list:
     """
     Function to verify the image. Checks Path, Type and Size of the image if the later two are provided.
     tqdm progress bar is used to show the progress and it updates every 1 second.
@@ -40,15 +40,9 @@ def verify_image(image_paths: list, image_type=None, image_shape=None,logger=Non
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
         results = list(tqdm(executor.map(verify_func, image_paths), total=len(image_paths),mininterval=1))
     if image_shape:
-        if logger:
-            logger.info('Image shape mismatch: {}'.format(results.count('image_shape_mismatch')))
-        else:
-            print('Image shape mismatch: {}'.format(results.count('image_shape_mismatch')))
+        logg.info('Image shape mismatch: {}'.format(results.count('image_shape_mismatch')), logger)
     if image_type:
-        if logger:
-            logger.info('Image type mismatch: {}'.format(results.count('image_type_mismatch')))
-        else:
-            print('Image type mismatch: {}'.format(results.count('image_type_mismatch')))
+        logg.info('Image type mismatch: {}'.format(results.count('image_type_mismatch')), logger)
     
     logg.info('Image not found: {}'.format(results.count(False)),logger)
     return results

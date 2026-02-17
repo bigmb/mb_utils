@@ -15,6 +15,13 @@ def retry(times, exceptions,logger=None):
         exceptions (tuple of exceptiosn):  The exceptions to catch
     Output:
         The wrapped function/method
+        
+    # @retry(times=3, exceptions=(ValueError, TypeError))
+    # def foo1():
+    #     print('Some code here ....')
+    #     print('Oh no, we have exception')
+    #     raise ValueError('Some error')
+
     """
     def decorator(func):
         def newfn(*args, **kwargs):
