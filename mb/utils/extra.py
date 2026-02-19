@@ -1,20 +1,36 @@
 ##Extra functions - batch creation, timer wrapper, etc.
 import time
+from functools import wraps
 from .logging import logg
 
 __all__ = ['timer', 'batch_generator', 'batch_create']
 
-def timer(func,logger=None):
+def timer(func=None, *, logger=...):
+    """Decorator to time a function.
+
+    Usage:
+        @timer
+        def f(...): ...
+
+        @timer(logger=my_logger)
+        def g(...): ...
+
+    Notes:
+        - Uses `logg.info(...)` (not `print`).
+        - If `logger=None`, timing output is silenced.
     """
-    Decorator to time a function
-    Input:
-        func: function to be timed
-    """
-    def wrapper(*args,**kwargs):
-        before = time.time()
-        a = func(*args,**kwargs)
-        logg.info('function time : {} seconds'.format(time.time() - before), logger)
-        return a
+
+    if func is None:
+        return lambda f: timer(f, logger=logger)
+
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        before = time.perf_counter()
+        result = func(*args, **kwargs)
+        elapsed = time.perf_counter() - before
+        logg.info(f'function time : {elapsed} seconds', logger)
+        return result
+
     return wrapper
 
 def batch_generator(iterable, batch_size):
