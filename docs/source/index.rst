@@ -15,5 +15,6 @@ API Reference
    :maxdepth: 2
    :caption: API Reference
 
+   mb
    modules
 
