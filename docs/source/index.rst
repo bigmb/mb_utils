@@ -16,4 +16,3 @@ API Reference
    :caption: Contents:
 
    mb
-   modules

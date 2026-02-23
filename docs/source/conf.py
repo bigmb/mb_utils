@@ -31,7 +31,7 @@ def setup(app):
 project = 'mb_utils'
 copyright = '2026, Malav'
 author = 'Malav'
-release = '2.0.28'
+release = '2.0.29'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
