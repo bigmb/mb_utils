@@ -75,6 +75,11 @@ import glob
 
 def install_package():
     subprocess.run(['./make_version.sh'], check=True)
+    print("version file updated")
+    print('*'*100)
+    subprocess.run(['./make_docs_version.sh'], check=True)
+    print("docs version file updated")
+    print('*'*100)
     subprocess.run(['git', 'add', '.'], check=True)
     msg = "updated version :" + subprocess.run(['cat', 'VERSION.txt'], check=True, stdout=subprocess.PIPE).stdout.decode().strip()
     # skip commit if make_version.sh already committed everything
