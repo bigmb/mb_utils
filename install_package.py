@@ -77,9 +77,9 @@ def install_package():
     subprocess.run(['./make_version.sh'], check=True)
     print("version file updated")
     print('*'*100)
-    subprocess.run(['./make_docs_version.sh'], check=True)
-    print("docs version file updated")
-    print('*'*100)
+    # subprocess.run(['./make_docs_version.sh'], check=True)
+    # print("docs version file updated")
+    # print('*'*100)
     version = subprocess.run(['cat', 'VERSION.txt'], capture_output=True, text=True).stdout.strip()
     msg = f"updated version: {version}"
 
