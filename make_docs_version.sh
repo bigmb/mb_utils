@@ -43,7 +43,4 @@ if [ "$1" != "--no-build" ]; then
     echo "Documentation built successfully at ${DOCS_DIR}/build/html/"
 fi
 
-# Stage and commit
-git add -A
-git commit -m "updated docs version to ${FULL_VERSION}"
 echo "Docs version updated to ${FULL_VERSION}"

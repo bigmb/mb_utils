@@ -80,28 +80,24 @@ def install_package():
     subprocess.run(['./make_docs_version.sh'], check=True)
     print("docs version file updated")
     print('*'*100)
+    version = subprocess.run(['cat', 'VERSION.txt'], capture_output=True, text=True).stdout.strip()
+    msg = f"updated version: {version}"
+
     subprocess.run(['git', 'add', '.'], check=True)
-    msg = "updated version :" + subprocess.run(['cat', 'VERSION.txt'], check=True, stdout=subprocess.PIPE).stdout.decode().strip()
-    # skip commit if make_version.sh already committed everything
     status = subprocess.run(['git', 'status', '--porcelain'], capture_output=True, text=True)
     if status.stdout.strip():
         subprocess.run(['git', 'commit', '-am', msg], check=True)
         print('git commit done')
     else:
         print('nothing to commit, skipping')
+
+    # Tag AFTER the single commit so the tag points at HEAD
+    subprocess.run(['git', 'tag', '-f', version], check=True)
+    print(f'Tagged as {version}')
+
     subprocess.run(['git', 'pull'], check=True)
     print('git pull done')
     subprocess.run(['git', 'push'], check=True)
-    # subprocess.run(['git', 'push', '--tags'], check=True)
-    version = subprocess.run(
-    ['cat', 'VERSION.txt'],
-    capture_output=True,
-    text=True).stdout.strip()
-
-    # Create tag locally if it doesn't exist
-    subprocess.run(['git', 'tag', version], check=False)
-
-    # Push ONLY this tag
     subprocess.run(['git', 'push', 'origin', version], check=False)
 
     print('git push done')
