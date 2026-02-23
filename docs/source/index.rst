@@ -8,10 +8,12 @@ mb_utils documentation
 
 A collection of Python utility functions for logging, profiling, retries, S3 operations, image verification, and more.
 
+API Reference
+-------------
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: API Reference
 
-   mb
+   modules
 
