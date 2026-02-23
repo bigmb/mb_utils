@@ -6,12 +6,12 @@
 mb_utils documentation
 ======================
 
-Add your content using ``reStructuredText`` syntax. See the
-`reStructuredText <https://www.sphinx-doc.org/en/master/usage/restructuredtext/index.html>`_
-documentation for details.
+A collection of Python utility functions for logging, profiling, retries, S3 operations, image verification, and more.
 
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
+
+   mb
 
