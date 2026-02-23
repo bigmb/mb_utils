@@ -7,3 +7,4 @@ fastprogress
 boto3
 pillow
 tqdm
+sphinx-rtd-theme
