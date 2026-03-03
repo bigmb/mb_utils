@@ -84,6 +84,22 @@ class LoggerWrapper:
 
 logg = LoggerWrapper()
 
+
+class LazyLogger:
+    """Proxy that creates the underlying logger only on first use."""
+
+    def __init__(self, name):
+        self._name = name
+        self._logger = None
+
+    def _get_logger(self):
+        if self._logger is None:
+            self._logger = make_logger(self._name)
+        return self._logger
+
+    def __getattr__(self, attr):
+        return getattr(self._get_logger(), attr)
+
 def make_logger(name):
     """
     logger package for user
@@ -129,5 +145,4 @@ def make_logger(name):
 
     return logger
 
-
-logger = make_logger('mb_utils')
+logger = LazyLogger('mb_utils')
