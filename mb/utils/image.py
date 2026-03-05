@@ -2,15 +2,14 @@ from .check_package import check_package
 
 __all__ = ['convert_webp_to_jpg']
 
-def convert_webp_to_jpg(image_path: str, output_path: str, format: str = 'JPG', crop_shape = None):
+def convert_webp_to_jpg(image_path: str, output_path: str, crop_shape = None):
     """
     Convert a WebP image to JPG format. With 4th channel being alpha. Apply alpha channel as mask to RGB channels, then save as JPG.
 
     Args:
         image_path (str): Path to the input WebP image.
         output_path (str): Path to save the converted format.
-        format (str): Output image format. Default is 'JPG'.
-        crop_shape (tuple): Optional_croping. (width, height,3). If provided, the image will be cropped to this shape before saving.
+        crop_shape (tuple): Optional_croping. (width:width, height:height,3). If provided, the image will be cropped to this shape before saving.
 
     Raises:
         ImportError: If the Pillow library is not installed.
@@ -35,10 +34,10 @@ def convert_webp_to_jpg(image_path: str, output_path: str, format: str = 'JPG', 
                 rgb_channels = rgb_channels.astype(np.uint8)  # Convert back to uint8
 
                 if crop_shape is not None:
-                    rgb_channels = rgb_channels[:crop_shape[0], :crop_shape[1], :]
+                    rgb_channels = rgb_channels[crop_shape[0], crop_shape[1], crop_shape[2]]  
 
                 output_image = Image.fromarray(rgb_channels)
-                output_image.save(output_path, format=format)
+                output_image.save(output_path)
             else:
                 raise Exception(f"Input image '{image_path}' does not have an alpha channel. Expected a WebP image with RGBA channels.")
     except Exception as e:
