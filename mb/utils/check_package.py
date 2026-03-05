@@ -10,7 +10,7 @@ def check_package(package_name, error_message=None, logger=None):
     Check if a package is installed
     Args:
         package_name (str): Name of the package
-        error_message (str, optional): Custom error message to display if the package is not found
+        error_message (str, optional): Custom error message to display if the package is not found + logger
         logger (logging.Logger, optional): Logger to use for logging messages
     Returns:
         bool: True if package is installed, False otherwise
