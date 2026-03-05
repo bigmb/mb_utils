@@ -35,8 +35,7 @@ def convert_webp_to_jpg(image_path: str, output_path: str, format: str = 'JPG', 
                 rgb_channels = rgb_channels.astype(np.uint8)  # Convert back to uint8
 
                 if crop_shape is not None:
-                    width, height, _ = crop_shape
-                    rgb_channels = rgb_channels[:height, :width]
+                    rgb_channels = rgb_channels[:crop_shape[0], :crop_shape[1], :]
 
                 output_image = Image.fromarray(rgb_channels)
                 output_image.save(output_path, format=format)
