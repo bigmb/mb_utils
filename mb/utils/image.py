@@ -9,7 +9,7 @@ def convert_webp_to_jpg(image_path: str, output_path: str, crop_shape = None):
     Args:
         image_path (str): Path to the input WebP image.
         output_path (str): Path to save the converted format.
-        crop_shape (tuple): Optional_croping. (width:width, height:height,3). If provided, the image will be cropped to this shape before saving.
+        crop_shape (tuple): Optional_croping. (h1,h2,w1,w2). If provided, the image will be cropped to this shape before saving.
 
     Raises:
         ImportError: If the Pillow library is not installed.
@@ -34,7 +34,7 @@ def convert_webp_to_jpg(image_path: str, output_path: str, crop_shape = None):
                 rgb_channels = rgb_channels.astype(np.uint8)  # Convert back to uint8
 
                 if crop_shape is not None:
-                    rgb_channels = rgb_channels[crop_shape[0], crop_shape[1], crop_shape[2]]  
+                    rgb_channels = rgb_channels[crop_shape[0]:crop_shape[1], crop_shape[2]:crop_shape[3], :]
 
                 output_image = Image.fromarray(rgb_channels)
                 output_image.save(output_path)
