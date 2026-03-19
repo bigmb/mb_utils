@@ -100,7 +100,7 @@ class LazyLogger:
     def __getattr__(self, attr):
         return getattr(self._get_logger(), attr)
 
-def make_logger(name):
+def make_logger(name, logger_location='logs/logger.log'):
     """
     logger package for user
     Input:
@@ -121,9 +121,9 @@ def make_logger(name):
     column_length -= log_lvl_length
     s5 = '-{}.{}s'.format(column_length, column_length)
     
-    os.mkdir('logs') if not os.path.exists('logs') else None
-    should_roll_over = os.path.isfile('logs/logger.log')
-    file_handler = logging.handlers.RotatingFileHandler('logs/logger.log',mode='w' ,maxBytes=1000000, backupCount=3)
+    os.makedirs(os.path.dirname(logger_location), exist_ok=True)
+    should_roll_over = os.path.isfile(logger_location)
+    file_handler = logging.handlers.RotatingFileHandler(logger_location, mode='w', maxBytes=1000000, backupCount=3)
     if should_roll_over:  # log already exists, roll over!
         file_handler.doRollover()
     file_handler.setLevel(DEBUG)
