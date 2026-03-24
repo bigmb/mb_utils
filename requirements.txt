@@ -1,10 +1,7 @@
-python>=3.8
-numpy
-matplotlib
-datetime
-colorama
-fastprogress
 boto3
-pillow
+colorama
+numpy
+pandas
+Pillow
+PyYAML
 tqdm
-sphinx-rtd-theme

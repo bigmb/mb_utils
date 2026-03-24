@@ -28,17 +28,32 @@ def convert_webp_to_jpg(image_path: str, output_path: str, crop_shape = None):
     try:
         with Image.open(image_path) as img:
             img_np = np.array(img)
-            if img_np.shape[2] == 4:  # Check if image has alpha
-                alpha_channel = img_np[:, :, 3] / 255.0  # Normalize alpha to [0, 1]
-                rgb_channels = img_np[:, :, :3] * alpha_channel[:, :, np.newaxis]  # Apply alpha as mask
-                rgb_channels = rgb_channels.astype(np.uint8)  # Convert back to uint8
 
-                if crop_shape is not None:
-                    rgb_channels = rgb_channels[crop_shape[0]:crop_shape[1], crop_shape[2]:crop_shape[3], :]
+            # If image has alpha channel (RGBA)
+            if img_np.ndim == 3 and img_np.shape[2] == 4:
+                alpha_channel = img_np[:, :, 3] / 255.0  # Normalize alpha
+                rgb_channels = img_np[:, :, :3] * alpha_channel[:, :, np.newaxis]
+                rgb_channels = rgb_channels.astype(np.uint8)
 
-                output_image = Image.fromarray(rgb_channels)
-                output_image.save(output_path)
+            # If image is already RGB (3 channels)
+            elif img_np.ndim == 3 and img_np.shape[2] == 3:
+                rgb_channels = img_np
+
             else:
-                raise Exception(f"Input image '{image_path}' does not have an alpha channel. Expected a WebP image with RGBA channels.")
+                raise Exception(
+                    f"Unsupported image format for '{image_path}'. "
+                    f"Expected 3 (RGB) or 4 (RGBA) channels, got shape {img_np.shape}"
+                )
+
+            if crop_shape is not None:
+                rgb_channels = rgb_channels[
+                    crop_shape[0]:crop_shape[1],
+                    crop_shape[2]:crop_shape[3],
+                    :
+                ]
+
+            output_image = Image.fromarray(rgb_channels)
+            output_image.save(output_path)
+
     except Exception as e:
-        raise Exception(f"Error converting '{image_path}' to {format}: {e}")
+        raise Exception(f"Error converting '{image_path}' to '{output_path}': {e}")
